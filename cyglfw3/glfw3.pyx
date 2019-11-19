@@ -245,7 +245,7 @@ DONT_CARE = cglfw3.GLFW_DONT_CARE
 #
 
 from libc.stdlib cimport malloc, free
-from cython cimport view
+#from cython cimport view
 
 #
 # Callbacks
@@ -590,7 +590,7 @@ cdef getshape(obj):
 
 cdef class Image:
     cdef cglfw3.GLFWimage * _this_ptr
-    cdef unsigned char[:,:,::1] _data
+#    cdef unsigned char[:,:,::1] _data
 
     property width:
         def __get__(self):
@@ -604,31 +604,31 @@ cdef class Image:
         def __get__(self):
             return (self.width, self.height)
 
-    property pixels:
-        def __get__(self):
-            return self._data
-
-        def __set__(self, value):
-            cdef unsigned char[:,:,::1] data
-            if isinstance(value, (tuple, list)):
-                shape = getshape(value)
-                data = view.array(shape=(shape[0], shape[1], 4), itemsize=sizeof(unsigned char), format="c")
-                for i in range(shape[0]):
-                    for j in range(shape[1]):
-                        data[i,j,0] = getitem(value[i][j], 0, 0x00)
-                        data[i,j,1] = getitem(value[i][j], 1, 0x00)
-                        data[i,j,2] = getitem(value[i][j], 2, 0x00)
-                        data[i,j,3] = getitem(value[i][j], 3, 0xFF)
-            else:
-                # must be a (writable) memory view or a buffer type
-                data = value
-
-            self._this_ptr.width = data.shape[0]
-            self._this_ptr.height = data.shape[1]
-            self._this_ptr.pixels = &data[0][0][0]
-
-            self._data = data
-
+#    property pixels:
+#        def __get__(self):
+#            return self._data
+#
+#        def __set__(self, value):
+#            cdef unsigned char[:,:,::1] data
+#            if isinstance(value, (tuple, list)):
+#                shape = getshape(value)
+#                data = view.array(shape=(shape[0], shape[1], 4), itemsize=sizeof(unsigned char), format="c")
+#                for i in range(shape[0]):
+#                    for j in range(shape[1]):
+#                        data[i,j,0] = getitem(value[i][j], 0, 0x00)
+#                        data[i,j,1] = getitem(value[i][j], 1, 0x00)
+#                        data[i,j,2] = getitem(value[i][j], 2, 0x00)
+#                        data[i,j,3] = getitem(value[i][j], 3, 0xFF)
+#            else:
+#                # must be a (writable) memory view or a buffer type
+#                data = value
+#
+#            self._this_ptr.width = data.shape[0]
+#            self._this_ptr.height = data.shape[1]
+#            self._this_ptr.pixels = &data[0][0][0]
+#
+#            self._data = data
+#
     def __cinit__(self):
         self._this_ptr = NULL
 
